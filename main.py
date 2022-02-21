@@ -60,3 +60,5 @@ print("Validation:")
 
 print(data_model.evaluate(dataTest_features,  dataTest_labels, verbose=2))
 
+data_model.save("C:\\Users\\chrbj\\PycharmProjects\\P10Python\\Model")
+
