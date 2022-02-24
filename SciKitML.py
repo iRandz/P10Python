@@ -33,7 +33,7 @@ min_max_scaler = preprocessing.MinMaxScaler()
 data_features = min_max_scaler.fit_transform(data_features)
 
 X_train, X_test, y_train, y_test = train_test_split(
-        data_features, data_labels, test_size=0.4, random_state=42
+        data_features, data_labels, test_size=0.2, random_state=42
     )
 
 # Prepare and train model -------------------------------------------------------
@@ -41,23 +41,19 @@ X_train, X_test, y_train, y_test = train_test_split(
 neigh = KNeighborsClassifier(n_neighbors=3)
 neigh.fit(X_train, y_train)
 
-#print(neigh.predict([[1.1]]))
-
-#print(neigh.predict_proba([[1.1]]))
-
-
-# Validate model
+# Validate model -------------------------------------------------------------------
 
 print(neigh.predict(X_test))
 
 print(np.array(y_test))
 
 print(neigh.score(X_test, y_test))
+score = neigh.score(X_test, y_test)
 
-# Display plots
+# Display plots ---------------------------------------------------------------------------
 
-show2D = 0
-show3D = 1
+show2D = 1
+show3D = 0
 
 mydict = {'Journey': 'green',
           'Manage': 'blue',
@@ -73,11 +69,13 @@ if show3D:
     fig = plt.figure(1, figsize=(8, 6))
     ax = fig.add_subplot(projection='3d')
     ax.scatter(data_features[:, column1X], data_features[:, column2Y], data_features[:, column3Z],
-               c=data_labels.map(mydict), cmap=plt.cm.nipy_spectral, edgecolor="k")
+               c=data_labels.map(mydict), edgecolor="k")
 
     fake_handles = [mpatches.Patch(color=item) for item in mydict.values()]
     label = mydict.keys()
     ax.legend(fake_handles, label, loc='upper right', prop={'size': 10})
+
+    ax.text(0, 0, 0, ("%.2f" % score).lstrip("0"))
 
     ax.set_xlabel('X Kills')
     ax.set_ylabel('Y Time')
