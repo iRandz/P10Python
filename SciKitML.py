@@ -26,6 +26,7 @@ dimensionalitySel = 3
 neighbors = 3  # KNN
 nnHiddenLayers = (10, 15, 6)  # NN
 ovrEstimator = KNeighborsClassifier(n_neighbors=neighbors)  # OvR
+svmKernel = 'linear'  # SVM
 
 # Prepare Data -------------------------------------------------------------
 data = pd.read_csv("RealData.csv", sep=';')
@@ -103,7 +104,7 @@ neural.fit(X_train, y_train)
 ovr = OneVsRestClassifier(ovrEstimator)
 ovr.fit(X_train, y_train)
 
-svmCLF = svm.SVC()
+svmCLF = svm.SVC(kernel=svmKernel)
 svmCLF.fit(X_train, y_train)
 
 # Validate model
@@ -125,6 +126,7 @@ print(ovr.score(X_test, y_test))
 
 print("\n -----------------------------")
 print("SVM")
+print("Kernel: " + str(svmCLF.kernel))
 print(svmCLF.score(X_test, y_test))
 
 score = neigh.score(X_test, y_test)
