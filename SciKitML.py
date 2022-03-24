@@ -18,9 +18,9 @@ from sklearn import svm
 show2D = 0
 show3D = 1
 
-usePCA = 0
-dimensionalityPCA = 6
-useFeatSel = 1
+usePCA = 1
+dimensionalityPCA = 3
+useFeatSel = 0
 dimensionalitySel = 3
 
 neighbors = 3  # KNN
@@ -65,6 +65,12 @@ for y in range(data_features.iloc[0, :].size):
 
 # Feature extraction (PCA)
 pca_features = PCA(n_components=dimensionalityPCA).fit_transform(data_features)
+pca_Data = PCA(n_components=dimensionalityPCA)
+pca_Data.fit(data_features)
+
+#print("Components: " + str(pca_Data.components_))
+print("Explained variance: " + str(pca_Data.explained_variance_))
+print("Explained variance ratio: " + str(pca_Data.explained_variance_ratio_))
 
 # Feature selection
 selector = SelectKBest(chi2, k=dimensionalitySel) #.fit_transform(data_features, data_labels)
