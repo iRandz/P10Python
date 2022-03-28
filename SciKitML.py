@@ -15,15 +15,16 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import LinearSVC
 from sklearn import svm
 from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import confusion_matrix
 
 # Settings ----------------------------------------------------------------
-show2D = 0
-show3D = 1
+show2D = 1
+show3D = 0
 column1X = 0
 column2Y = 1
 column3Z = 2
 
-recalcManage = 0
+recalcManage = 1
 normalize = 1
 
 usePCA = 0
@@ -158,7 +159,7 @@ if useNewFeatSel:
 
 # Create test/train split
 X_train, X_test, y_train, y_test = train_test_split(
-        data_features, data_labels, test_size=0.4, random_state=42
+        data_features, data_labels, test_size=0.2, random_state=42
     )
 
 # ML -----------------------------------------------------------------------------------------
@@ -184,6 +185,7 @@ print(neigh.score(X_test, y_test))
 y_true = y_test
 y_pred = neigh.predict(X_test)
 print(balanced_accuracy_score(y_true, y_pred))
+print(confusion_matrix(y_true, y_pred))
 
 print("\n -----------------------------")
 print("Multi layer perceptron")
@@ -192,6 +194,7 @@ print("Layers: " + str(neural.hidden_layer_sizes))
 print(neural.score(X_test, y_test))
 y_pred = neural.predict(X_test)
 print(balanced_accuracy_score(y_true, y_pred))
+print(confusion_matrix(y_true, y_pred))
 
 print("\n -----------------------------")
 print("One versus rest")
@@ -199,6 +202,7 @@ print("Using: " + str(ovr.estimator))
 print(ovr.score(X_test, y_test))
 y_pred = ovr.predict(X_test)
 print(balanced_accuracy_score(y_true, y_pred))
+print(confusion_matrix(y_true, y_pred))
 
 print("\n -----------------------------")
 print("SVM")
@@ -206,6 +210,7 @@ print("Kernel: " + str(svmCLF.kernel))
 print(svmCLF.score(X_test, y_test))
 y_pred = svmCLF.predict(X_test)
 print(balanced_accuracy_score(y_true, y_pred))
+print(confusion_matrix(y_true, y_pred))
 
 score = neigh.score(X_test, y_test)
 
