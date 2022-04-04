@@ -16,63 +16,49 @@ from sklearn.svm import LinearSVC
 from sklearn import svm
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.metrics import confusion_matrix
+from sklearn.feature_selection import RFECV
+from enum import Enum
+
+import Functions
+
+
+class ClassTarget(Enum):
+    TYPE = 'Type'
+    GENDER = 'Gender'
+
 
 # Settings ----------------------------------------------------------------
-show2D = 1
-show3D = 0
+dataFile = "V2Data.csv"
+target = ClassTarget.TYPE
+
+show2D = 0
+show3D = 1
 column1X = 0
 column2Y = 1
-column3Z = 2
+column3Z = 3
 
-recalcManage = 1
+recalcManage = 0
+removeManage = 0
+removeOther = 1
 normalize = 1
 
 usePCA = 0
 useFeatSel = 1
+useNewFeatSel = 0
 
 dimensionalityPCA = 4
 dimensionalitySel = 4
-useNewFeatSel = 0
 
 neighbors = 5  # KNN
 nnHiddenLayers = (10, 15, 6)  # NN
 ovrEstimator = KNeighborsClassifier(n_neighbors=neighbors)  # OvR
 svmKernel = 'linear'  # SVM
 
-
 # Prepare Data -------------------------------------------------------------
-def RecalcManage(row):
-    if row['Type'] == 'Manage':
-        if row['Assault mean'] > row['Journey mean']:
-            return 'Assault'
-        return 'Journey'
-    return row['Type']
+data = pd.read_csv(dataFile, sep=';')
+data_features = Functions.ProcessData(data, recalcManage, removeManage)
 
-
-#data = pd.read_csv("RealData.csv", sep=';')
-#data = pd.read_csv("CombinedData.csv", sep=';')
-data = pd.read_csv("V2Data.csv", sep=';')
-
-if recalcManage:
-    data['Type'] = data.apply (lambda row: RecalcManage(row), axis=1)
-    #data = data[data.Type != 'Manage']
-
-#data.pop('Weekly playtime')
-data.pop('Participant ID')
-#data.pop('Age')
-data.pop('Gender')
-data.pop('Journey mean')
-data.pop('Manage mean')
-data.pop('Assault mean')
-data.pop('Unique tiles')
-#data.pop('Deaths')
-#data.pop('MajorLore seen')
-#data.pop('MajorLore reading time')
-#data.pop('MajorLore close')
-#data.pop('MajorLore interactions')
-
-data_features = data.copy()
-data_labels = data_features.pop('Type')
+data_labels = data_features.pop(target.value)
 
 simplify = False
 if simplify:
@@ -82,80 +68,21 @@ if simplify:
 
 
 # Preprocessing ----------------------------------------------------------
-def CalcRatio(row, timeName, interactionName):
-    if row[interactionName] == 0:
-        return 0
-    return row[timeName] / row[interactionName]
-
-
 # Calculate 2nd order features
-data_features['MajorLoreTimePr'] = data_features.apply (lambda row: CalcRatio(row, 'MajorLore reading time', 'MajorLore interactions'), axis=1)
-data_features['LoreTimePr'] = data_features.apply (lambda row: CalcRatio(row, 'Lore reading time', 'Lore interactions'), axis=1)
-#data_features['MajorLoreRatioClose'] = data_features.apply (lambda row: CalcRatio(row, 'MajorLore interactions', 'MajorLore seen'), axis=1)
-data_features['LoreRatioSeen'] = data_features.apply (lambda row: CalcRatio(row, 'Lore interactions', 'Lore seen'), axis=1)
-data_features['LoreRatioClose'] = data_features.apply (lambda row: CalcRatio(row, 'Lore interactions', 'Lore close'), axis=1)
-data_features['ResourceRatioSeen'] = data_features.apply (lambda row: CalcRatio(row, 'Resources', 'Resources seen '), axis=1)
-data_features['ResourceRatioClose'] = data_features.apply (lambda row: CalcRatio(row, 'Resources', 'Resources close'), axis=1)
-data_features['EnemyRatioSeen'] = data_features.apply (lambda row: CalcRatio(row, 'Kills', 'Enemies seen'), axis=1)
-data_features['EnemyRatioClose'] = data_features.apply (lambda row: CalcRatio(row, 'Kills', 'Enemies close'), axis=1)
-data_features['ResourceRatioSeen'] = data_features.apply (lambda row: CalcRatio(row, 'Resources', 'Resources seen '), axis=1)
-#data_features['MapTimePr'] = data_features.apply (lambda row: CalcRatio(row, 'XXX', 'Opened map'), axis=1)
+data_features = Functions.CalcDerivedFeatures(data_features)
 
 
 # Normalize to 0-1 range
 if normalize:
-    min_max_scaler = preprocessing.MinMaxScaler()
-    data_features_norm = min_max_scaler.fit_transform(data_features)
-    for y in range(data_features.iloc[0, :].size):
-        for x in range(data_features.iloc[:, 0].size):
-            data_features.iloc[x, y] = data_features_norm[x, y]
+    data_features = Functions.Normalize(data_features)
 
-# Feature extraction (PCA)
-pca_features = PCA(n_components=dimensionalityPCA).fit_transform(data_features)
-pca_Data = PCA(n_components=dimensionalityPCA)
-pca_Data.fit(data_features)
+# Feature selection / PCA
+data_features = Functions.FeatureSelection(data_features, data_labels, usePCA, useFeatSel, dimensionalitySel, dimensionalityPCA)
 
-#print("Components: " + str(pca_Data.components_))
-print("PCA:")
-print("Explained variance: " + str(pca_Data.explained_variance_))
-print("Explained variance ratio: " + str(pca_Data.explained_variance_ratio_))
-print("---")
-
-# Feature selection
-if usePCA:
-    data_features = pca_features
-    if useFeatSel:
-        selector = SelectKBest(k=dimensionalitySel)
-        selector.fit(pca_features, data_labels)
-        cols = selector.get_support(indices=True)
-        data_features = pca_features[:, cols]
-else:
-    if useFeatSel:
-        # Feature selection
-        selector = SelectKBest(chi2, k=dimensionalitySel)  # .fit_transform(data_features, data_labels)
-        selector.fit(data_features, data_labels)
-        cols = selector.get_support(indices=True)
-        data_features = data_features.iloc[:, cols]
-    print(data_features.columns)
+print(data_features.columns)
 
 # Force wrongly labelled data into 'Other'
-for x in range(data_labels.size):
-    y = data_labels.iloc[x]
-    if y != 'Manage' and y != 'Journey' and y != 'Assault' and y != 'Other':
-        data_labels[x] = 'Other'
-
-if useNewFeatSel:
-    knn = KNeighborsClassifier(n_neighbors=3)
-    sfs = sklearn.feature_selection.SequentialFeatureSelector(knn, n_features_to_select=3)
-    sfs.fit(data_features, data_labels)
-    print("---")
-    print(sfs.get_support())
-
-    #sfs.transform(data_features)
-
-    print(data_features)
-    print("---")
-
+data_labels, data = Functions.HandleInvalidData(data_labels, removeOther, data)
 
 # Create test/train split
 X_train, X_test, y_train, y_test = train_test_split(
@@ -174,7 +101,28 @@ ovr = OneVsRestClassifier(ovrEstimator)
 ovr.fit(X_train, y_train)
 
 svmCLF = svm.SVC(kernel=svmKernel)
-svmCLF.fit(X_train, y_train)
+svmX_train = X_train
+svmX_test = X_test
+# Most model / split feature selection
+if useNewFeatSel:
+    selector = RFECV(svmCLF)
+    selector = selector.fit(X_train, y_train)
+    svmX_train = selector.transform(X_train)
+    svmX_test = selector.transform(X_test)
+
+    print(selector.get_feature_names_out())
+    print(selector.ranking_)
+    print(selector.n_features_)
+    plt.figure()
+    plt.xlabel("Number of features selected")
+    plt.ylabel("Cross validation score (accuracy)")
+    plt.plot(
+        range(1, len(selector.grid_scores_) + 1),
+        selector.grid_scores_,
+    )
+    plt.show()
+
+svmCLF.fit(svmX_train, y_train)
 
 # Validate model
 print("\n -----------------------------")
@@ -207,8 +155,8 @@ print(confusion_matrix(y_true, y_pred))
 print("\n -----------------------------")
 print("SVM")
 print("Kernel: " + str(svmCLF.kernel))
-print(svmCLF.score(X_test, y_test))
-y_pred = svmCLF.predict(X_test)
+print(svmCLF.score(svmX_test, y_test))
+y_pred = svmCLF.predict(svmX_test)
 print(balanced_accuracy_score(y_true, y_pred))
 print(confusion_matrix(y_true, y_pred))
 
