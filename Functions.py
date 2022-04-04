@@ -1,3 +1,4 @@
+import pandas as pd
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest, chi2
@@ -76,17 +77,18 @@ def FeatureSelection(data_features, data_labels, usePCA, useFeatSel, dimensional
     print("PCA:")
     print("Explained variance: " + str(pca_Data.explained_variance_))
     print("Explained variance ratio: " + str(pca_Data.explained_variance_ratio_))
+    print(pca_Data)
     print("---")
 
     # Feature selection
 
     if usePCA:
-        data_features = pca_features
+        data_features = pd.DataFrame(pca_features)
         if useFeatSel:
             selector = SelectKBest(k=dimensionalitySel)
             selector.fit(pca_features, data_labels)
             cols = selector.get_support(indices=True)
-            data_features = pca_features[:, cols]
+            data_features = pd.DataFrame(pca_features[:, cols])
     else:
         if useFeatSel:
             # Feature selection

@@ -172,12 +172,9 @@ if show3D:
     fig = plt.figure(1, figsize=(8, 6))
     ax = fig.add_subplot(projection='3d')
 
-    if usePCA:
-        ax.scatter(pca_features[:, column1X], pca_features[:, column2Y], pca_features[:, column3Z],
-                   c=data_labels.map(mydict), edgecolor="k")
-    else:
-        ax.scatter(data_features.iloc[:, column1X], data_features.iloc[:, column2Y], data_features.iloc[:, column3Z],
+    ax.scatter(data_features.iloc[:, column1X], data_features.iloc[:, column2Y], data_features.iloc[:, column3Z],
                c=data_labels.map(mydict), edgecolor="k")
+    if not usePCA:
         ax.set_xlabel(data_features.columns[column1X])
         ax.set_ylabel(data_features.columns[column2Y])
         ax.set_zlabel(data_features.columns[column3Z])
@@ -191,10 +188,9 @@ if show3D:
     plt.show()
 
 if show2D:
-    if usePCA:
-        plt.scatter(pca_features[:, column1X], pca_features[:, column2Y], c=data_labels.map(mydict))
-    else:
-        plt.scatter(data_features.iloc[:, column1X], data_features.iloc[:, column2Y], c=data_labels.map(mydict))
+
+    plt.scatter(data_features.iloc[:, column1X], data_features.iloc[:, column2Y], c=data_labels.map(mydict))
+    if not usePCA:
         plt.xlabel(data_features.columns[column1X])
         plt.ylabel(data_features.columns[column2Y])
 
