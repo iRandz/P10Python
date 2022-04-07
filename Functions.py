@@ -82,21 +82,22 @@ def ProcessData(data, recalcManage, removeManage, target):
 
 
 def FeatureSelection(data_features, data_labels, usePCA, useFeatSel, dimensionalitySel, dimensionalityPCA):
-    # Feature extraction (PCA)
-    pca_features = PCA(n_components=dimensionalityPCA).fit_transform(data_features)
-    pca_Data = PCA(n_components=dimensionalityPCA)
-    pca_Data.fit(data_features)
-
-    # print("Components: " + str(pca_Data.components_))
-    print("PCA:")
-    print("Explained variance: " + str(pca_Data.explained_variance_))
-    print("Explained variance ratio: " + str(pca_Data.explained_variance_ratio_))
-    print(pca_Data)
-    print("---")
 
     # Feature selection
 
     if usePCA:
+        # Feature extraction (PCA)
+        pca_features = PCA(n_components=dimensionalityPCA).fit_transform(data_features)
+        pca_Data = PCA(n_components=dimensionalityPCA)
+        pca_Data.fit(data_features)
+
+        # print("Components: " + str(pca_Data.components_))
+        print("PCA:")
+        print("Explained variance: " + str(pca_Data.explained_variance_))
+        print("Explained variance ratio: " + str(pca_Data.explained_variance_ratio_))
+        print(pca_Data)
+        print("---")
+
         data_features = pd.DataFrame(pca_features)
         if useFeatSel:
             selector = SelectKBest(k=dimensionalitySel)
@@ -134,11 +135,13 @@ def HandleInvalidData(data_labels, removeOther, data):
     return data_labels, data
 
 
-def ValidateModel(model, X_test, y_test):
-    print(model.score(X_test, y_test))
+def ValidateModel(model, X_test, y_test, printStuff):
     y_true = y_test
     y_pred = model.predict(X_test)
-    print(balanced_accuracy_score(y_true, y_pred))
-    print(confusion_matrix(y_true, y_pred))
+
+    if printStuff:
+        print(model.score(X_test, y_test))
+        print(balanced_accuracy_score(y_true, y_pred))
+        print(confusion_matrix(y_true, y_pred))
 
     return balanced_accuracy_score(y_true, y_pred)
