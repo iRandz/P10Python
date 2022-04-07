@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.metrics import balanced_accuracy_score, confusion_matrix
 
 
 def RecalcManage(row):
@@ -32,8 +33,7 @@ def CalcDerivedFeatures(dataframe):
         lambda row: CalcRatio(row, 'Resources', 'Resources seen '), axis=1)
     dataframe['ResourceRatioClose'] = dataframe.apply(
         lambda row: CalcRatio(row, 'Resources', 'Resources close'), axis=1)
-    dataframe['EnemyRatioSeen'] = dataframe.apply(lambda row: CalcRatio(row, 'Kills', 'Enemies seen'),
-                                                          axis=1)
+    dataframe['EnemyRatioSeen'] = dataframe.apply(lambda row: CalcRatio(row, 'Kills', 'Enemies seen'), axis=1)
     dataframe['EnemyRatioClose'] = dataframe.apply(
         lambda row: CalcRatio(row, 'Kills', 'Enemies close'), axis=1)
     dataframe['ResourceRatioSeen'] = dataframe.apply(
@@ -43,28 +43,42 @@ def CalcDerivedFeatures(dataframe):
     return dataframe
 
 
-def ProcessData(data, recalcManage, removeManage):
+def ProcessData(data, recalcManage, removeManage, target):
+    def SafePop(data, popValue):
+        if popValue in data.columns:
+            data.pop(popValue)
+
     if recalcManage:
         data['Type'] = data.apply(lambda row: RecalcManage(row), axis=1)
 
     if removeManage:
         data = data[data['Type'] != 'Manage']
 
+    data_labels = data.pop(target.value)
+
+    SafePop(data, 'Type')
+    SafePop(data, 'Gender')
+
     # data.pop('Weekly playtime')
     data.pop('Participant ID')
     # data.pop('Age')
-    data.pop('Gender')
     data.pop('Journey mean')
     data.pop('Manage mean')
     data.pop('Assault mean')
-    data.pop('Unique tiles')
+    # data.pop('Unique tiles')
     # data.pop('Deaths')
     # data.pop('MajorLore seen')
     # data.pop('MajorLore reading time')
     # data.pop('MajorLore close')
     # data.pop('MajorLore interactions')
 
-    return data.copy()
+    simplify = False
+    if simplify:
+        for x in range(data_labels.size):
+            if data_labels[x] == 'Assault' or data_labels[x] == 'Journey':
+                data_labels[x] = 'Other'
+
+    return data.copy(), data_labels
 
 
 def FeatureSelection(data_features, data_labels, usePCA, useFeatSel, dimensionalitySel, dimensionalityPCA):
@@ -118,3 +132,13 @@ def HandleInvalidData(data_labels, removeOther, data):
         data = data[data['Type'] != 'Other']
 
     return data_labels, data
+
+
+def ValidateModel(model, X_test, y_test):
+    print(model.score(X_test, y_test))
+    y_true = y_test
+    y_pred = model.predict(X_test)
+    print(balanced_accuracy_score(y_true, y_pred))
+    print(confusion_matrix(y_true, y_pred))
+
+    return balanced_accuracy_score(y_true, y_pred)
