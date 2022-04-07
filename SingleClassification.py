@@ -6,34 +6,35 @@ import Classification
 import Functions
 
 
-def SingelClassification(data_features, data_labels, mainML):
-
-	data_features = Functions.FeatureSelection(data_features, data_labels, mainML.usePCA, mainML.useFeatSel, mainML.dimensionalitySel, mainML.dimensionalityPCA)
+def SingleClassification(data_features, data_labels, settings):
+	data_features = Functions.FeatureSelection(data_features, data_labels, settings.usePCA, settings.useFeatSel,
+											   settings.dimensionalitySel, settings.dimensionalityPCA)
 	knnScore, nnScore, ovrScore, svmScore = Classification.Classify(data_features, data_labels, True)
 
 	# Display plots ---------------------------------------------------------------------------
-	if mainML.target == mainML.ClassTarget.TYPE:
+	if settings.target == settings.ClassTarget.TYPE:
 		mydict = {'Journey': 'green',
 				  'Manage': 'blue',
 				  'Assault': 'red',
 				  'Other': 'black'}
-	elif mainML.target == mainML.ClassTarget.GENDER:
+	elif settings.target == settings.ClassTarget.GENDER:
 		mydict = {'Male': 'blue',
 				  'Female': 'red',
 				  'Other': 'black'}
 	else:
-		sys.exit("Unknown target. Can't show plots." + mainML.target.value)
+		sys.exit("Unknown target. Can't show plots." + settings.target.value)
 
-	if mainML.show3D:
+	if settings.show3D:
 		fig = plt.figure(1, figsize=(8, 6))
 		ax = fig.add_subplot(projection='3d')
 
-		ax.scatter(data_features.iloc[:, mainML.column1X], data_features.iloc[:, mainML.column2Y], data_features.iloc[:, mainML.column3Z],
+		ax.scatter(data_features.iloc[:, settings.column1X], data_features.iloc[:, settings.column2Y],
+				   data_features.iloc[:, settings.column3Z],
 				   c=data_labels.map(mydict), edgecolor="k")
-		if not mainML.usePCA:
-			ax.set_xlabel(data_features.columns[mainML.column1X])
-			ax.set_ylabel(data_features.columns[mainML.column2Y])
-			ax.set_zlabel(data_features.columns[mainML.column3Z])
+		if not settings.usePCA:
+			ax.set_xlabel(data_features.columns[settings.column1X])
+			ax.set_ylabel(data_features.columns[settings.column2Y])
+			ax.set_zlabel(data_features.columns[settings.column3Z])
 
 		fake_handles = [mpatches.Patch(color=item) for item in mydict.values()]
 		label = mydict.keys()
@@ -43,12 +44,13 @@ def SingelClassification(data_features, data_labels, mainML):
 
 		plt.show()
 
-	if mainML.show2D:
+	if settings.show2D:
 
-		plt.scatter(data_features.iloc[:, mainML.column1X], data_features.iloc[:, mainML.column2Y], c=data_labels.map(mydict))
-		if not mainML.usePCA:
-			plt.xlabel(data_features.columns[mainML.column1X])
-			plt.ylabel(data_features.columns[mainML.column2Y])
+		plt.scatter(data_features.iloc[:, settings.column1X], data_features.iloc[:, settings.column2Y],
+					c=data_labels.map(mydict))
+		if not settings.usePCA:
+			plt.xlabel(data_features.columns[settings.column1X])
+			plt.ylabel(data_features.columns[settings.column2Y])
 
 		fake_handles = [mpatches.Patch(color=item) for item in mydict.values()]
 		label = mydict.keys()

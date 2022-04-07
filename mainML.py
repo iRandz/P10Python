@@ -46,8 +46,8 @@ if Settings.normalize:
     data_features = Functions.Normalize(data_features)
 
 
-# Test ideal dimensionality
+# Test ideal dimensionality -------------------------------
 DimensionalityCheck.DimensionalityCheck(data_features, data_labels)
 
-# Single classification
-SingleClassification.SingelClassification(data_features, data_labels, Settings)
+# Single classification -----------------------------------
+# SingleClassification.SingleClassification(data_features, data_labels, Settings)

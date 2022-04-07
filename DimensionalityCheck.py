@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
+import matplotlib.patches as mpatches
 
 import Classification
 import Functions
@@ -18,7 +20,7 @@ def DimensionalityCheck(data_features, data_labels):
 
 
     def PrintResults(inputScores):
-        # print(inputScores)
+        print(inputScores)
         print(inputScores.argmax())
         print(inputScores[inputScores.argmax()])
 
@@ -31,3 +33,19 @@ def DimensionalityCheck(data_features, data_labels):
     PrintResults(ovrScores)
     print("SVM")
     PrintResults(svmScores)
+
+    t = np.arange(0., len(data_features.columns)-1, 1)
+
+    fig, ax = plt.subplots()
+
+    ax.plot(t, knnScores, 'go', t, knnScores, 'g')
+    ax.plot(t, nnScores, 'bo', t, nnScores, 'b')
+    ax.plot(t, ovrScores, 'ro', t, ovrScores, 'r')
+    ax.plot(t, svmScores, 'yo', t, svmScores, 'y')
+
+    knn = mpatches.Patch(color='green', label='knn')
+    nn = mpatches.Patch(color='blue', label='nn')
+    ovr = mpatches.Patch(color='red', label='ovr')
+    svm = mpatches.Patch(color='yellow', label='svm')
+    ax.legend(handles=[knn, nn, ovr, svm])
+    plt.show()
