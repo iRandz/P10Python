@@ -7,41 +7,40 @@ import Classification
 import Functions
 
 
-def DimensionalityCheck(data_features, data_labels):
-    knnScores = np.zeros(len(data_features.columns)-1)
-    nnScores = np.zeros(len(data_features.columns)-1)
-    ovrScores = np.zeros(len(data_features.columns)-1)
-    svmScores = np.zeros(len(data_features.columns)-1)
+def dimensionality_check(data_features, data_labels):
+    knn_scores = np.zeros(len(data_features.columns)-1)
+    nn_scores = np.zeros(len(data_features.columns)-1)
+    ovr_scores = np.zeros(len(data_features.columns)-1)
+    svm_scores = np.zeros(len(data_features.columns)-1)
 
     for i in range(2, len(data_features.columns)-1):
         data_features_copy = pd.DataFrame(data_features.copy())
-        working_features = Functions.FeatureSelection(data_features_copy, data_labels, False, True, i, 0)
-        knnScores[i], nnScores[i], ovrScores[i], svmScores[i] = Classification.Classify(working_features, data_labels, False)
+        working_features = Functions.feature_selection(data_features_copy, data_labels, False, True, i, 0)
+        knn_scores[i], nn_scores[i], ovr_scores[i], svm_scores[i] = Classification.classify(working_features,
+                                                                                            data_labels, False)
 
-
-    def PrintResults(inputScores):
-        print(inputScores)
-        print(inputScores.argmax())
-        print(inputScores[inputScores.argmax()])
-
+    def print_results(input_scores):
+        print(input_scores)
+        print(input_scores.argmax())
+        print(input_scores[input_scores.argmax()])
 
     print("Knn")
-    PrintResults(knnScores)
+    print_results(knn_scores)
     print("NN")
-    PrintResults(nnScores)
+    print_results(nn_scores)
     print("ovr")
-    PrintResults(ovrScores)
+    print_results(ovr_scores)
     print("SVM")
-    PrintResults(svmScores)
+    print_results(svm_scores)
 
     t = np.arange(0., len(data_features.columns)-1, 1)
 
     fig, ax = plt.subplots()
 
-    ax.plot(t, knnScores, 'go', t, knnScores, 'g')
-    ax.plot(t, nnScores, 'bo', t, nnScores, 'b')
-    ax.plot(t, ovrScores, 'ro', t, ovrScores, 'r')
-    ax.plot(t, svmScores, 'yo', t, svmScores, 'y')
+    ax.plot(t, knn_scores, 'go', t, knn_scores, 'g')
+    ax.plot(t, nn_scores, 'bo', t, nn_scores, 'b')
+    ax.plot(t, ovr_scores, 'ro', t, ovr_scores, 'r')
+    ax.plot(t, svm_scores, 'yo', t, svm_scores, 'y')
 
     knn = mpatches.Patch(color='green', label='knn')
     nn = mpatches.Patch(color='blue', label='nn')
