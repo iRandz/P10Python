@@ -6,6 +6,7 @@ from sklearn.metrics import balanced_accuracy_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 
 import FeatureDict
+import Plotting
 
 
 def recalc_manage(row):
@@ -69,7 +70,6 @@ def process_data(data, settingsIn):
 
     data = handle_invalid_data(settingsIn, data)
 
-    print(data.groupby(target.value).size())
     data_labels: pd.DataFrame = data.pop(target.value)
 
     safe_pop(data, 'Type')
@@ -95,6 +95,10 @@ def process_data(data, settingsIn):
     # data.pop('Major resources close')
     # data.pop('Major resources seen ')
     # data.pop('Lore interactions')
+
+    print(len(data.columns))
+
+    Plotting.PlotAllFeatures(data, data_labels, settingsIn)
 
     simplify = False
     if simplify:

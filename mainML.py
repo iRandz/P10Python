@@ -36,16 +36,16 @@ class Settings:
     classifier_target = ClassTarget.TYPE
     regressor_target = RegressionTarget.KILLS
 
-    show2D = 0
-    show3D = 1
+    show2D = 1
+    show3D = 0
     column1X = 0
     column2Y = 1
-    column3Z = 3
+    column3Z = 2
 
     recalcManage = 0
     removeManage = 0
     removeOther = 1
-    normalize = 1
+    normalize = 0
 
     usePCA = 0
     useFeatSel = 1
