@@ -5,6 +5,8 @@ from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 
+import FeatureDict
+
 
 def recalc_manage(row):
     if row['Type'] == 'Manage':
@@ -21,26 +23,24 @@ def calc_ratio(row, timeName, interactionName):
 
 
 def calc_derived_features(dataframe):
-    dataframe['MajorLoreTimePr'] = dataframe.apply(
+    dataframe[FeatureDict.MLT_PER] = dataframe.apply(
         lambda row: calc_ratio(row, 'MajorLore reading time', 'MajorLore interactions'), axis=1)
-    dataframe['LoreTimePr'] = dataframe.apply(
+    dataframe[FeatureDict.LT_PER] = dataframe.apply(
         lambda row: calc_ratio(row, 'Lore reading time', 'Lore interactions'), axis=1)
     # dataframe['MajorLoreRatioClose'] = dataframe.apply (lambda row: CalcRatio(row, 'MajorLore interactions',
     # 'MajorLore seen'), axis=1)
-    dataframe['LoreRatioSeen'] = dataframe.apply(
+    dataframe[FeatureDict.LR_SEEN] = dataframe.apply(
         lambda row: calc_ratio(row, 'Lore interactions', 'Lore seen'), axis=1)
-    dataframe['LoreRatioClose'] = dataframe.apply(
+    dataframe[FeatureDict.LR_CLOSE] = dataframe.apply(
         lambda row: calc_ratio(row, 'Lore interactions', 'Lore close'), axis=1)
-    dataframe['ResourceRatioSeen'] = dataframe.apply(
+    dataframe[FeatureDict.RR_SEEN] = dataframe.apply(
         lambda row: calc_ratio(row, 'Resources', 'Resources seen '), axis=1)
-    dataframe['ResourceRatioClose'] = dataframe.apply(
+    dataframe[FeatureDict.RR_CLOSE] = dataframe.apply(
         lambda row: calc_ratio(row, 'Resources', 'Resources close'), axis=1)
-    dataframe['EnemyRatioSeen'] = dataframe.apply(lambda row: calc_ratio(row, 'Kills', 'Enemies seen'), axis=1)
-    dataframe['EnemyRatioClose'] = dataframe.apply(
+    dataframe[FeatureDict.ER_SEEN] = dataframe.apply(lambda row: calc_ratio(row, 'Kills', 'Enemies seen'), axis=1)
+    dataframe[FeatureDict.ER_CLOSE] = dataframe.apply(
         lambda row: calc_ratio(row, 'Kills', 'Enemies close'), axis=1)
-    dataframe['ResourceRatioSeen'] = dataframe.apply(
-        lambda row: calc_ratio(row, 'Resources', 'Resources seen '), axis=1)
-    # dataframe['MapTimePr'] = dataframe.apply (lambda row: CalcRatio(row, 'MapTime', 'Opened map'), axis=1)
+    dataframe[FeatureDict.MT_PER] = dataframe.apply (lambda row: calc_ratio(row, 'MapTime', 'Opened map'), axis=1)
 
     return dataframe
 
@@ -67,7 +67,10 @@ def process_data(data, settingsIn):
     if removeManage:
         data = data[data['Type'] != 'Manage']
 
-    data_labels = data.pop(target.value)
+    data = handle_invalid_data(settingsIn, data)
+
+    print(data.groupby(target.value).size())
+    data_labels: pd.DataFrame = data.pop(target.value)
 
     safe_pop(data, 'Type')
     safe_pop(data, 'Gender')
@@ -78,12 +81,20 @@ def process_data(data, settingsIn):
     data.pop('Journey mean')
     data.pop('Manage mean')
     data.pop('Assault mean')
+    safe_pop(data, 'Obj or exp')
+    safe_pop(data, 'Previous participant')
+    # data.pop('Major enemies close')
+    # data.pop('Major kills')
+    # data.pop('Opened stats')
     # data.pop('Unique tiles')
     # data.pop('Deaths')
     # data.pop('MajorLore seen')
     # data.pop('MajorLore reading time')
     # data.pop('MajorLore close')
     # data.pop('MajorLore interactions')
+    # data.pop('Major resources close')
+    # data.pop('Major resources seen ')
+    # data.pop('Lore interactions')
 
     simplify = False
     if simplify:
@@ -141,15 +152,11 @@ def normalize(data_features):
     return data_features
 
 
-def handle_invalid_data(data_labels, removeOther, data):
-    for x in range(data_labels.size):
-        y = data_labels.iloc[x]
-        if y != 'Manage' and y != 'Journey' and y != 'Assault' and y != 'Other':
-            data_labels[x] = 'Other'
-    if removeOther:
-        data = data[data['Type'] != 'Other']
+def handle_invalid_data(settingsIn, data):
+    if settingsIn.removeOther:
+        data = data[data[settingsIn.classifier_target.value] != 'Other']
 
-    return data_labels, data
+    return data
 
 
 def validate_classification_model(model, X_test, y_test, printStuff):

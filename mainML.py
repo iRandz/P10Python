@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from enum import Enum
 
@@ -15,6 +16,7 @@ class Settings:
     class ClassTarget(Enum):
         TYPE = 'Type'
         GENDER = 'Gender'
+        OBJOREXP = 'Obj or exp'
 
     class RegressionTarget(Enum):
         PLAYTIME = 'Weekly playtime'
@@ -29,31 +31,33 @@ class Settings:
         CLASSIFICATION = 1
         REGRESSION = 2
 
-    dataFile = "V2Data.csv"
-    test = CurrentTest.REGRESSION
+    dataFile = "CombinedDays.csv"
+    test = CurrentTest.CLASSIFICATION
     classifier_target = ClassTarget.TYPE
-    regressor_target = RegressionTarget.RESOURCES
+    regressor_target = RegressionTarget.KILLS
 
-    show2D = 1
-    show3D = 0
+    show2D = 0
+    show3D = 1
     column1X = 0
     column2Y = 1
-    column3Z = 2
+    column3Z = 3
 
     recalcManage = 0
     removeManage = 0
     removeOther = 1
-    normalize = 0
+    normalize = 1
 
     usePCA = 0
     useFeatSel = 1
 
-    dimensionalityPCA = 4
-    dimensionalitySel = 2
+    dimensionalityPCA = 3
+    dimensionalitySel = 4
 
 
 # Prepare Data -------------------------------------------------------------
 data = pd.read_csv(Settings.dataFile, sep=';')
+
+print(np.any(pd.isnull(data)))
 
 # Calculate 2nd order features
 data_features = Functions.calc_derived_features(data)

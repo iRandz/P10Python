@@ -3,12 +3,15 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 import Classification
+import FeatureDict
 import Functions
 
 
 def single_classification(data_features, data_labels, settings):
 	data_features = Functions.feature_selection(data_features, data_labels, settings.usePCA, settings.useFeatSel,
 												settings.dimensionalitySel, settings.dimensionalityPCA)
+	# cols = data_features.mask(data_features == FeatureDict.AGE or data_features == )
+	# data_features = pd.DataFrame(data_features[:, cols])
 	knn_score, nn_score, ovr_score, svm_score = Classification.classify(data_features, data_labels, True)
 
 	# Display plots ---------------------------------------------------------------------------
@@ -21,6 +24,9 @@ def single_classification(data_features, data_labels, settings):
 		mydict = {'Male': 'blue',
 				  'Female': 'red',
 				  'Other': 'black'}
+	elif settings.classifier_target == settings.ClassTarget.OBJOREXP:
+		mydict = {'Objective': 'red',
+				  'Exploration': 'green'}
 	else:
 		sys.exit("Unknown target. Can't show plots." + settings.classifier_target.value)
 
