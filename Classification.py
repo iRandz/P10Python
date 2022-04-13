@@ -7,7 +7,7 @@ from sklearn.neural_network import MLPClassifier
 import Functions
 
 neighbors = 20  # KNN
-nnHiddenLayers = (1)  # NN (10, 15, 6) (100, 5, 5): 70, (5, 5, 100): 66, (50, 5, 50): 66
+nnHiddenLayers = (5, 5)  # NN (10, 15, 6) (100, 5, 5): 70, (5, 5, 100): 66, (50, 5, 50): 66
 nnSolver = 'lbfgs'  # NN (lbfgs, adam, sgd)
 ovrEstimator = KNeighborsClassifier(n_neighbors=neighbors)  # OvR
 svmKernel = 'linear'  # SVM

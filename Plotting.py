@@ -1,9 +1,7 @@
 import sys
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import numpy as np
-import pandas as pd
 
 
 def PlotAllFeatures(data_features, data_labels, settingsIn):
@@ -12,7 +10,6 @@ def PlotAllFeatures(data_features, data_labels, settingsIn):
 
 
 def PlotSingleFeatureHist(data_feature, data_labels, settingsIn):
-	myDict = GetPlotcolorDict(settingsIn)
 
 	labels = data_labels.unique()
 	df = np.empty(3, dtype=object)

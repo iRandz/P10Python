@@ -50,7 +50,7 @@ def calc_derived_features(dataframe):
     dataframe[FeatureDict.ER_SEEN] = dataframe.apply(lambda row: calc_ratio(row, 'Kills', 'Enemies seen'), axis=1)
     dataframe[FeatureDict.ER_CLOSE] = dataframe.apply(
         lambda row: calc_ratio(row, 'Kills', 'Enemies close'), axis=1)
-    dataframe[FeatureDict.MT_PER] = dataframe.apply (lambda row: calc_ratio(row, 'MapTime', 'Opened map'), axis=1)
+    dataframe[FeatureDict.MT_PER] = dataframe.apply(lambda row: calc_ratio(row, 'MapTime', 'Opened map'), axis=1)
 
     return dataframe
 
@@ -194,7 +194,6 @@ def validate_classification_model(model, X_test, y_test, printStuff):
 
 
 def validate_regression_model(model, X_test, y_test, printStuff):
-    y_true = y_test
     y_predict = model.predict(X_test)
 
     if printStuff:

@@ -3,7 +3,6 @@ import pandas as pd
 
 import DimensionalityCheck
 import Functions
-import Regression
 import Settings
 import SingleClassification
 
