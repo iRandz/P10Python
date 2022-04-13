@@ -10,19 +10,46 @@ def PlotAllFeatures(data_features, data_labels, settingsIn):
 	# TODO Try the below link to implement better visualization of each feature
 	# https://acaird.github.io/computer/python/datascience/2016/06/18/event-density
 	for i in range(len(data_features.columns)):
-		PlotSingleFeature(data_features.iloc[:, i], data_labels, settingsIn)
+		PlotSingleFeatureHist(data_features.iloc[:, i], data_labels, settingsIn)
 
 
-def PlotSingleFeature(data_feature: pd.DataFrame, data_labels, settingsIn):
+def PlotSingleFeatureHist(data_feature, data_labels, settingsIn):
+	myDict = GetPlotcolorDict(settingsIn)
+
+	labels = data_labels.unique()
+	df = np.empty(3, dtype=object)
+	counts = np.empty(3, dtype=object)
+	bins = np.empty(3, dtype=object)
+
+	fig, ax = plt.subplots()
+	for i in range(len(labels)):
+		mask = data_labels == labels[i]
+		df[i] = data_feature[mask]
+		counts[i], bins[i] = np.histogram(df[i], 10)
+		currentBin = bins[i]
+		ax.plot(currentBin[:-1], counts[i], label=labels[i])
+
+	handles, labels = ax.get_legend_handles_labels()
+	ax.legend(handles, labels)
+	plt.xlabel(data_feature.name)
+	plt.show()
+
+
+def PlotSingleFeature(data_feature, data_labels, settingsIn):
 
 	myDict = GetPlotcolorDict(settingsIn)
+
 	feature = data_feature.name
 	max_arg = data_feature.max()
 	data_feature = np.split(data_feature, len(data_feature))
+	offsetDict = {'Journey': '0',
+			  'Manage': '1',
+			  'Assault': '2',
+			  'Other': '3'}
 
 	plt.figure()
 	plt.hlines(0, 0, max_arg)  # Draw a horizontal line
-	plt.eventplot(data_feature, orientation='horizontal', colors=data_labels.map(myDict), lineoffsets=0)
+	plt.eventplot(data_feature, orientation='horizontal', colors=data_labels.map(myDict), lineoffsets=data_labels.map(offsetDict))
 	plt.axis("on")
 	plt.xlabel(feature)
 	plt.show()
