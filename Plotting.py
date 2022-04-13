@@ -7,8 +7,6 @@ import pandas as pd
 
 
 def PlotAllFeatures(data_features, data_labels, settingsIn):
-	# TODO Try the below link to implement better visualization of each feature
-	# https://acaird.github.io/computer/python/datascience/2016/06/18/event-density
 	for i in range(len(data_features.columns)):
 		PlotSingleFeatureHist(data_features.iloc[:, i], data_labels, settingsIn)
 
