@@ -21,16 +21,19 @@ def dimensionality_check(data_features, data_labels):
                                                                                             data_labels, False)
 
     def print_results(input_scores):
-        print(input_scores)
+        # print(input_scores)
         print(input_scores.argmax())
         print(input_scores[input_scores.argmax()])
 
     print("Knn")
     print_results(knn_scores)
+    print("---")
     print("NN")
     print_results(nn_scores)
+    print("---")
     print("ovr")
     print_results(ovr_scores)
+    print("---")
     print("SVM")
     print_results(svm_scores)
 

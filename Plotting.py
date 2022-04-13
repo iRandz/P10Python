@@ -22,11 +22,14 @@ def PlotSingleFeatureHist(data_feature, data_labels, settingsIn):
 	bins = np.empty(3, dtype=object)
 
 	fig, ax = plt.subplots()
+	valMin = np.min(data_feature)
+	valMax = np.max(data_feature)
 	for i in range(len(labels)):
 		mask = data_labels == labels[i]
 		df[i] = data_feature[mask]
-		counts[i], bins[i] = np.histogram(df[i], 10)
+		counts[i], bins[i] = np.histogram(df[i], 8, (valMin, valMax))
 		currentBin = bins[i]
+		counts[i] = counts[i] / len(df[i])
 		ax.plot(currentBin[:-1], counts[i], label=labels[i])
 
 	handles, labels = ax.get_legend_handles_labels()
@@ -35,7 +38,7 @@ def PlotSingleFeatureHist(data_feature, data_labels, settingsIn):
 	plt.show()
 
 
-def PlotSingleFeature(data_feature, data_labels, settingsIn):
+def EventPlotSingleFeature(data_feature, data_labels, settingsIn):
 
 	myDict = GetPlotcolorDict(settingsIn)
 

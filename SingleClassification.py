@@ -6,16 +6,21 @@ import pandas as pd
 import Classification
 import FeatureDict
 import Functions
+import Settings
 
 
-def single_classification(data_features, data_labels, settings):
-	# data_features = Functions.feature_selection(data_features, data_labels, settings.usePCA, settings.useFeatSel,
-	#											settings.dimensionalitySel, settings.dimensionalityPCA)
+def single_classification(data_features, data_labels, settings: Settings.Settings):
+	data_features = Functions.feature_selection(data_features, data_labels, settings.usePCA, settings.useFeatSel,
+												settings.dimensionalitySel, settings.dimensionalityPCA)
 
-	data_features = data_features[[FeatureDict.AGE, FeatureDict.MLT_PER, FeatureDict.TIMESS, FeatureDict.ML_READINGTIME]]
+	print(data_features.columns)
+
+	# data_features = data_features[[FeatureDict.AGE, FeatureDict.MLT_PER, FeatureDict.TIMESS, FeatureDict.ML_READINGTIME]]
 
 	knn_score, nn_score, ovr_score, svm_score = Classification.classify(data_features, data_labels, True)
 
+	print("---")
+	print("Plotting:")
 	# Display plots ---------------------------------------------------------------------------
 	if settings.classifier_target == settings.ClassTarget.TYPE:
 		mydict = {'Journey': 'green',

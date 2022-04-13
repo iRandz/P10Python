@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler
 
 import FeatureDict
 import Plotting
+import Settings
 
 
 def recalc_manage(row):
@@ -14,6 +15,14 @@ def recalc_manage(row):
         if row['Assault mean'] > row['Journey mean']:
             return 'Assault'
         return 'Journey'
+    return row['Type']
+
+
+def recalc_journey(row):
+    if row['Type'] == 'Journey':
+        if row['Assault mean'] > row['Manage mean']:
+            return 'Assault'
+        return 'Manage'
     return row['Type']
 
 
@@ -46,7 +55,7 @@ def calc_derived_features(dataframe):
     return dataframe
 
 
-def process_data(data, settingsIn):
+def process_data(data, settingsIn: Settings.Settings):
     recalcManage = settingsIn.recalcManage
     removeManage = settingsIn.removeManage
     if settingsIn.test == settingsIn.CurrentTest.DIMENSIONALITY or settingsIn.test == settingsIn.CurrentTest.CLASSIFICATION:
@@ -64,6 +73,9 @@ def process_data(data, settingsIn):
 
     if recalcManage:
         data['Type'] = data.apply(lambda row: recalc_manage(row), axis=1)
+
+    if settingsIn.recalcJourney:
+        data['Type'] = data.apply(lambda row: recalc_journey(row), axis=1)
 
     if removeManage:
         data = data[data['Type'] != 'Manage']
@@ -96,9 +108,15 @@ def process_data(data, settingsIn):
     # data.pop('Major resources seen ')
     # data.pop('Lore interactions')
 
+    print("Participants:")
+    print(len(data.index)/5)
+    print("---")
+    print("Features:")
     print(len(data.columns))
+    print("---")
 
-    Plotting.PlotAllFeatures(data, data_labels, settingsIn)
+    if settingsIn.plotAllHists:
+        Plotting.PlotAllFeatures(data, data_labels, settingsIn)
 
     simplify = False
     if simplify:
