@@ -46,6 +46,7 @@ OBJ_EXP = 'Obj or exp'
 P_PARTICIPANT = 'Previous participant'
 GENDER = 'Gender'
 ID = 'Participant ID'
+DAY = 'Day'
 
 # 2nd order features
 MLT_PER = 'MajorLoreTimePr'
