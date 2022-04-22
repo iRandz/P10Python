@@ -43,16 +43,17 @@ net.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-data_dir = "images"
+data_dir = "ExObImages"
 
-classes = ('Assault', 'Journey', 'Manage')
+#classes = ('Assault', 'Journey', 'Manage')
+classes = ('Exploration', 'Objective')
 
 dataset = ImageFolder(data_dir, transform=transforms.Compose([
     transforms.Resize((60, 60)), transforms.ToTensor()
 ]))
 
 batch_size = 4
-val_size = 10
+val_size = 50
 train_size = len(dataset) - val_size
 #
 train_data, val_data = random_split(dataset, [train_size, val_size])
@@ -73,11 +74,9 @@ val_dl = DataLoader(val_data, batch_size * 2, shuffle=True, num_workers=4, pin_m
 # val_dl = torch.utils.data.DataLoader(testset, batch_size=batch_size,
 #                                          shuffle=True, num_workers=2)
 
-classes = ('Assault', 'Journey', 'Manange')
-
 if __name__ == '__main__':
     freeze_support()
-    for epoch in range(2):  # loop over the dataset multiple times
+    for epoch in range(20):  # loop over the dataset multiple times
 
         running_loss = 0.0
         for i, data in enumerate(train_dl, 0):
