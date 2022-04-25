@@ -35,11 +35,11 @@ class Settings:
     recalcManage = 0
     recalcJourney = 0
     removeManage = 0
-    removeOther = 0
+    removeOther = 1
     normalize = 1
 
     usePCA = 0
     useFeatSel = 1
 
     dimensionalityPCA = 3
-    dimensionalitySel = 3
+    dimensionalitySel = 4

@@ -97,6 +97,8 @@ def process_data(data, settingsIn: Settings.Settings):
     safe_pop(data, 'Previous participant')
     # data.pop('Major enemies close')
     # data.pop('Major kills')
+    # data.pop(FeatureDict.E_SEEN)
+    # data.pop(FeatureDict.ME_SEEN)
     # data.pop('Opened stats')
     # data.pop('Unique tiles')
     # data.pop('Deaths')
@@ -108,7 +110,7 @@ def process_data(data, settingsIn: Settings.Settings):
     # data.pop('Major resources seen ')
     # data.pop('Lore interactions')
 
-    print("Participants:")
+    print("Participants: (Rows / 5)")
     print(len(data.index)/5)
     print("---")
     print("Features:")

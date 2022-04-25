@@ -16,7 +16,8 @@ def dimensionality_check(data_features, data_labels):
     for i in range(2, len(data_features.columns)-1):
         print(i)
         data_features_copy = pd.DataFrame(data_features.copy())
-        working_features = Functions.feature_selection(data_features_copy, data_labels, False, True, i, 0)
+        FeatSelo = True
+        working_features = Functions.feature_selection(data_features_copy, data_labels, not FeatSelo, FeatSelo, i, i)
         knn_scores[i], nn_scores[i], ovr_scores[i], svm_scores[i] = Classification.classify(working_features,
                                                                                             data_labels, False)
 

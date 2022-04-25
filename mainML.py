@@ -5,14 +5,11 @@ import DimensionalityCheck
 import Functions
 import Settings
 import SingleClassification
-
-
-# Settings ----------------------------------------------------------------
 import SingleRegression
 
 settings = Settings.Settings()
 # Prepare Data -------------------------------------------------------------
-data = pd.read_csv(settings.dataFile, sep=';')
+data = pd.read_csv("data_highMeanDif.csv", sep=';')
 
 print("Check for null:")
 print(np.any(pd.isnull(data)))

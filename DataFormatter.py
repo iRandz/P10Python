@@ -47,9 +47,9 @@ def ByPlayedBefore(dataIn):
 	data_neverPlayedBefore.to_csv('data_neverPlayedBefore.csv', sep=';', index=False)
 
 
-data = pd.read_csv("CombinedDays.csv", sep=';')
+data = pd.read_csv("Data/CombinedDayLog.CSV", sep=';')
 
 ByDay(data)
 ByPlaytime(data, 3)
-ByMeans(data, 0.5)
+ByMeans(data, 0.75)
 ByPlayedBefore(data)

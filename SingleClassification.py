@@ -59,7 +59,7 @@ def single_classification(data_features, data_labels, settings: Settings.Setting
 	if settings.show2D:
 
 		plt.scatter(data_features.iloc[:, settings.column1X], data_features.iloc[:, settings.column2Y],
-					c=data_labels.map(mydict))
+					c=data_labels.map(mydict), alpha=0.3)
 		if not settings.usePCA:
 			plt.xlabel(data_features.columns[settings.column1X])
 			plt.ylabel(data_features.columns[settings.column2Y])
