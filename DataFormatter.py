@@ -18,7 +18,7 @@ def ByDay(dataIn):
 
 
 def ByPlaytime(dataIn, valueSplit):
-	data_lowPlaytime: pd.DataFrame = dataIn.loc[dataIn[fD.PLAYTIME] < valueSplit]
+	data_lowPlaytime: pd.DataFrame = dataIn.loc[dataIn[fD.PLAYTIME] <= valueSplit]
 	data_highPlaytime = dataIn.loc[dataIn[fD.PLAYTIME] > valueSplit]
 
 	data_lowPlaytime.to_csv('data_lowPlayTime.csv', sep=';', index=False)
@@ -50,6 +50,6 @@ def ByPlayedBefore(dataIn):
 data = pd.read_csv("Data/CombinedDayLog.CSV", sep=';')
 
 ByDay(data)
-ByPlaytime(data, 3)
-ByMeans(data, 0.75)
+ByPlaytime(data, 10)
+ByMeans(data, 1)
 ByPlayedBefore(data)

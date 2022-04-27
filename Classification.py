@@ -1,23 +1,30 @@
 from sklearn import svm
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GroupShuffleSplit
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 
 import Functions
+import Settings
 
 neighbors = 5  # KNN
-nnHiddenLayers = (100, 5, 5)  # NN (10, 15, 6) (100, 5, 5): 70, (5, 5, 100): 66, (50, 5, 50): 66
+nnHiddenLayers = (50, 5, 5)  # NN (10, 15, 6) (100, 5, 5): 70, (5, 5, 100): 66, (50, 5, 50): 66
 nnSolver = 'lbfgs'  # NN (lbfgs, adam, sgd)
 ovrEstimator = KNeighborsClassifier(n_neighbors=neighbors)  # OvR
 svmKernel = 'linear'  # SVM
 
 
-def classify(data_features, data_labels, print_stuff):
+def classify(data_features, data_labels, print_stuff, settingsIn: Settings.Settings):
 	# Create test/train split
-	x_train, x_test, y_train, y_test = train_test_split(
-			data_features, data_labels, test_size=0.2, random_state=42
-		)
+	gss = GroupShuffleSplit(n_splits=5, train_size=.8, random_state=7)
+	train_idx, test_idx = None, None
+	for train_idx, test_idx in gss.split(data_features, data_labels, settingsIn.groups):
+		continue
+	x_train, y_train = data_features.iloc[train_idx], data_labels[train_idx]
+	x_test, y_test = data_features.iloc[test_idx], data_labels[test_idx]
+
+	# x_train, x_test, y_train, y_test = train_test_split(
+	# 	data_features, data_labels, test_size=0.2, random_state=42)
 
 	# ML -----------------------------------------------------------------------------------------
 	# Prepare and train model

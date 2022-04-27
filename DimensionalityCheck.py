@@ -7,19 +7,26 @@ import Classification
 import Functions
 
 
-def dimensionality_check(data_features, data_labels):
+def dimensionality_check(data_features, data_labels, settingsIn):
     knn_scores = np.zeros(len(data_features.columns)-1)
     nn_scores = np.zeros(len(data_features.columns)-1)
     ovr_scores = np.zeros(len(data_features.columns)-1)
     svm_scores = np.zeros(len(data_features.columns)-1)
 
-    for i in range(2, len(data_features.columns)-1):
+    featureMemory = None
+    for i in range(1, len(data_features.columns)-1):
         print(i)
         data_features_copy = pd.DataFrame(data_features.copy())
         FeatSelo = True
         working_features = Functions.feature_selection(data_features_copy, data_labels, not FeatSelo, FeatSelo, i, i)
+        if i is 1:
+            featureMemory = working_features.columns
+            print(featureMemory)
+            continue
+        print(working_features.columns.copy().drop(featureMemory).values)
+        featureMemory = working_features.columns
         knn_scores[i], nn_scores[i], ovr_scores[i], svm_scores[i] = Classification.classify(working_features,
-                                                                                            data_labels, False)
+                                                                                            data_labels, False, settingsIn)
 
     def print_results(input_scores):
         # print(input_scores)
@@ -52,4 +59,5 @@ def dimensionality_check(data_features, data_labels):
     ovr = mpatches.Patch(color='red', label='ovr')
     svm = mpatches.Patch(color='yellow', label='svm')
     ax.legend(handles=[knn, nn, ovr, svm])
+    plt.grid(True, 'major', 'y', linewidth=2)
     plt.show()

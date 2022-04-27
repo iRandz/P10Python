@@ -88,7 +88,7 @@ def process_data(data, settingsIn: Settings.Settings):
     safe_pop(data, 'Gender')
 
     # data.pop('Weekly playtime')
-    data.pop('Participant ID')
+    settingsIn.groups = data.pop('Participant ID')
     # data.pop('Age')
     data.pop('Journey mean')
     data.pop('Manage mean')
@@ -115,6 +115,10 @@ def process_data(data, settingsIn: Settings.Settings):
     print("---")
     print("Features:")
     print(len(data.columns))
+    print("---")
+    print("Classes")
+    print(data_labels.unique())
+    print(data_labels.value_counts())
     print("---")
 
     if settingsIn.plotAllHists:

@@ -43,3 +43,4 @@ class Settings:
 
     dimensionalityPCA = 3
     dimensionalitySel = 4
+    groups = None

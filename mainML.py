@@ -27,7 +27,7 @@ if settings.normalize:
 
 if settings.test == settings.CurrentTest.DIMENSIONALITY:
     # Test ideal dimensionality -------------------------------
-    DimensionalityCheck.dimensionality_check(data_features, data_labels)
+    DimensionalityCheck.dimensionality_check(data_features, data_labels, settings)
 elif settings.test == settings.CurrentTest.CLASSIFICATION:
     # Single classification -----------------------------------
     SingleClassification.single_classification(data_features, data_labels, settings)
