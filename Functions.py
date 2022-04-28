@@ -182,7 +182,9 @@ def normalize(data_features):
 
 def handle_invalid_data(settingsIn, data):
     if settingsIn.removeOther:
-        data = data[data[settingsIn.classifier_target.value] != 'Other']
+        print(data.iloc[192]['Gender'])
+        data: pd.DataFrame = data[data[settingsIn.classifier_target.value] != 'Other']
+        print(data.iloc[192]['Gender'])
 
     return data
 

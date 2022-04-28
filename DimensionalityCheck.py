@@ -5,9 +5,10 @@ import matplotlib.patches as mpatches
 
 import Classification
 import Functions
+import Settings
 
 
-def dimensionality_check(data_features, data_labels, settingsIn):
+def dimensionality_check(data_features, data_labels, settingsIn: Settings.Settings):
     knn_scores = np.zeros(len(data_features.columns)-1)
     nn_scores = np.zeros(len(data_features.columns)-1)
     ovr_scores = np.zeros(len(data_features.columns)-1)
@@ -59,5 +60,6 @@ def dimensionality_check(data_features, data_labels, settingsIn):
     ovr = mpatches.Patch(color='red', label='ovr')
     svm = mpatches.Patch(color='yellow', label='svm')
     ax.legend(handles=[knn, nn, ovr, svm])
+    plt.title(str(settingsIn.classifier_target.value) + " : " + str(settingsIn.dataFile))
     plt.grid(True, 'major', 'y', linewidth=2)
     plt.show()

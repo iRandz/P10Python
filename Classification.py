@@ -16,12 +16,13 @@ svmKernel = 'linear'  # SVM
 
 def classify(data_features, data_labels, print_stuff, settingsIn: Settings.Settings):
 	# Create test/train split
-	gss = GroupShuffleSplit(n_splits=5, train_size=.8, random_state=7)
+	gss = GroupShuffleSplit(n_splits=5, train_size=.6, random_state=6)
 	train_idx, test_idx = None, None
 	for train_idx, test_idx in gss.split(data_features, data_labels, settingsIn.groups):
 		continue
-	x_train, y_train = data_features.iloc[train_idx], data_labels[train_idx]
-	x_test, y_test = data_features.iloc[test_idx], data_labels[test_idx]
+
+	x_train, y_train = data_features.iloc[train_idx], data_labels.iloc[train_idx]
+	x_test, y_test = data_features.iloc[test_idx], data_labels.iloc[test_idx]
 
 	# x_train, x_test, y_train, y_test = train_test_split(
 	# 	data_features, data_labels, test_size=0.2, random_state=42)

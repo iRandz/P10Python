@@ -54,6 +54,8 @@ def single_classification(data_features, data_labels, settings: Settings.Setting
 
 		ax.text(0, 0, 0, ("%.2f" % nn_score).lstrip("0"))
 
+		plt.title(str(settings.classifier_target.value) + " : " + str(settings.dataFile))
+
 		plt.show()
 
 	if settings.show2D:
@@ -67,5 +69,7 @@ def single_classification(data_features, data_labels, settings: Settings.Setting
 		fake_handles = [mpatches.Patch(color=item) for item in mydict.values()]
 		label = mydict.keys()
 		plt.legend(fake_handles, label, loc='upper right', prop={'size': 10})
+
+		plt.title(str(settings.classifier_target.value) + " : " + str(settings.dataFile))
 
 		plt.show()

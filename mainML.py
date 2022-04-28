@@ -9,7 +9,10 @@ import SingleRegression
 
 settings = Settings.Settings()
 # Prepare Data -------------------------------------------------------------
-data = pd.read_csv("data_highMeanDif.csv", sep=';')
+file = "Data/CombinedDayLog.CSV"
+data = pd.read_csv(file, sep=';')
+
+settings.dataFile = file
 
 print("Check for null:")
 print(np.any(pd.isnull(data)))

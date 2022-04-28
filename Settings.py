@@ -21,7 +21,7 @@ class Settings:
         REGRESSION = 2
 
     dataFile = "CombinedDays.csv"
-    test = CurrentTest.DIMENSIONALITY
+    test = CurrentTest.CLASSIFICATION
     plotAllHists = 0
     classifier_target = ClassTarget.TYPE
     regressor_target = RegressionTarget.KILLS
@@ -42,5 +42,5 @@ class Settings:
     useFeatSel = 1
 
     dimensionalityPCA = 3
-    dimensionalitySel = 4
+    dimensionalitySel = 3
     groups = None
