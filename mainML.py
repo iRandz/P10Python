@@ -9,7 +9,7 @@ import SingleRegression
 
 settings = Settings.Settings()
 # Prepare Data -------------------------------------------------------------
-file = "Data/CombinedDayLog.CSV"
+file = "data_lowPlayTime.csv"
 data = pd.read_csv(file, sep=';')
 
 settings.dataFile = file

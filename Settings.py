@@ -21,9 +21,9 @@ class Settings:
         REGRESSION = 2
 
     dataFile = "CombinedDays.csv"
-    test = CurrentTest.CLASSIFICATION
+    test = CurrentTest.DIMENSIONALITY
     plotAllHists = 0
-    classifier_target = ClassTarget.TYPE
+    classifier_target = ClassTarget.GENDER
     regressor_target = RegressionTarget.KILLS
 
     show2D = 0

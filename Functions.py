@@ -89,12 +89,13 @@ def process_data(data, settingsIn: Settings.Settings):
 
     # data.pop('Weekly playtime')
     settingsIn.groups = data.pop('Participant ID')
-    # data.pop('Age')
+    safe_pop(data, FeatureDict.AGE)
     data.pop('Journey mean')
     data.pop('Manage mean')
     data.pop('Assault mean')
     safe_pop(data, 'Obj or exp')
     safe_pop(data, 'Previous participant')
+    safe_pop(data, FeatureDict.PLAYTIME)
     # data.pop('Major enemies close')
     # data.pop('Major kills')
     # data.pop(FeatureDict.E_SEEN)
@@ -182,9 +183,7 @@ def normalize(data_features):
 
 def handle_invalid_data(settingsIn, data):
     if settingsIn.removeOther:
-        print(data.iloc[192]['Gender'])
         data: pd.DataFrame = data[data[settingsIn.classifier_target.value] != 'Other']
-        print(data.iloc[192]['Gender'])
 
     return data
 
@@ -194,6 +193,8 @@ def validate_classification_model(model, X_test, y_test, printStuff):
     y_predict = model.predict(X_test)
 
     if printStuff:
+        print("---")
+        print(model)
         print(model.score(X_test, y_test))
         print(balanced_accuracy_score(y_true, y_predict))
         print(confusion_matrix(y_true, y_predict))

@@ -62,4 +62,5 @@ def dimensionality_check(data_features, data_labels, settingsIn: Settings.Settin
     ax.legend(handles=[knn, nn, ovr, svm])
     plt.title(str(settingsIn.classifier_target.value) + " : " + str(settingsIn.dataFile))
     plt.grid(True, 'major', 'y', linewidth=2)
+    plt.ylim([0.3, 1])
     plt.show()

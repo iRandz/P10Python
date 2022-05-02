@@ -50,6 +50,6 @@ def ByPlayedBefore(dataIn):
 data = pd.read_csv("Data/CombinedDayLog.CSV", sep=';')
 
 ByDay(data)
-ByPlaytime(data, 3)
-ByMeans(data, 0.1)
+ByPlaytime(data, 10)
+ByMeans(data, 1.2)
 ByPlayedBefore(data)
