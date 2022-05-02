@@ -199,7 +199,7 @@ def validate_classification_model(model, X_test, y_test, printStuff):
         print(balanced_accuracy_score(y_true, y_predict))
         print(confusion_matrix(y_true, y_predict))
 
-    return balanced_accuracy_score(y_true, y_predict)
+    return balanced_accuracy_score(y_true, y_predict), y_true, y_predict
 
 
 def validate_regression_model(model, X_test, y_test, printStuff):
