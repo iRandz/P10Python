@@ -110,6 +110,8 @@ def process_data(data, settingsIn: Settings.Settings):
     # data.pop('Major resources close')
     # data.pop('Major resources seen ')
     # data.pop('Lore interactions')
+    # data.pop(FeatureDict.LT_PER)
+    # data.pop(FeatureDict.L_READINGTIME)
 
     print("Participants: (Rows / 5)")
     print(len(data.index)/5)

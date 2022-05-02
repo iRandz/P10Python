@@ -33,6 +33,12 @@ def single_classification(data_features, data_labels, settings: Settings.Setting
 	elif settings.classifier_target == settings.ClassTarget.OBJOREXP:
 		mydict = {'Objective': 'red',
 				  'Exploration': 'green'}
+	elif settings.classifier_target == settings.ClassTarget.DAYS:
+		mydict = {0: 'red',
+				  1: 'blue',
+				  2: 'yellow',
+				  3: 'green',
+				  4: 'black'}
 	else:
 		sys.exit("Unknown target. Can't show plots." + settings.classifier_target.value)
 

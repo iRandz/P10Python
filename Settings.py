@@ -6,6 +6,7 @@ class Settings:
         TYPE = 'Type'
         GENDER = 'Gender'
         OBJOREXP = 'Obj or exp'
+        DAYS = 'Day'
 
     class RegressionTarget(Enum):
         PLAYTIME = 'Weekly playtime'
@@ -21,9 +22,9 @@ class Settings:
         REGRESSION = 2
 
     dataFile = "CombinedDays.csv"
-    test = CurrentTest.DIMENSIONALITY
+    test = CurrentTest.CLASSIFICATION
     plotAllHists = 0
-    classifier_target = ClassTarget.TYPE
+    classifier_target = ClassTarget.DAYS
     regressor_target = RegressionTarget.KILLS
 
     show2D = 0
@@ -42,5 +43,5 @@ class Settings:
     useFeatSel = 1
 
     dimensionalityPCA = 3
-    dimensionalitySel = 4
+    dimensionalitySel = 3
     groups = None
