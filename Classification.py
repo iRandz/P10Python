@@ -29,7 +29,7 @@ def myFit(classifier, x_train, y_train, x_test, y_test, y_t, y_p):
 
 def classify(data_features, data_labels, print_stuff, settingsIn: Settings.Settings):
 	# Create test/train split
-	splits = 5
+	splits = 2
 	sgkf = StratifiedGroupKFold(n_splits=splits, shuffle=True, random_state=42)
 	# gss = GroupShuffleSplit(n_splits=5, train_size=.6, random_state=42)
 	# train_idx, test_idx = None, None

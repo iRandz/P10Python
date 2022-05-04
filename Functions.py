@@ -1,7 +1,6 @@
 import pandas as pd
-from sklearn import preprocessing
 from sklearn.decomposition import PCA
-from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 
@@ -82,7 +81,7 @@ def process_data(data, settingsIn: Settings.Settings):
 
     data = handle_invalid_data(settingsIn, data)
 
-    data_labels: pd.DataFrame = data.pop(target.value)
+    data_labels = data.pop(target.value)
 
     safe_pop(data, 'Type')
     safe_pop(data, 'Gender')
@@ -112,6 +111,13 @@ def process_data(data, settingsIn: Settings.Settings):
     # data.pop('Lore interactions')
     # data.pop(FeatureDict.LT_PER)
     # data.pop(FeatureDict.L_READINGTIME)
+    # data.pop(FeatureDict.MOUSE_MOVE)
+    # data.pop(FeatureDict.FAR)
+
+    print("Constant columns:")
+    print(data.loc[:, (data == data.iloc[0]).all()].columns.values)
+    data = data.loc[:, (data != data.iloc[0]).any()]  # Remove constant columns
+    print("---")
 
     print("Participants: (Rows / 5)")
     print(len(data.index)/5)
@@ -119,8 +125,7 @@ def process_data(data, settingsIn: Settings.Settings):
     print("Features:")
     print(len(data.columns))
     print("---")
-    print("Classes")
-    print(data_labels.unique())
+    print("Classes:")
     print(data_labels.value_counts())
     print("---")
 
@@ -162,7 +167,7 @@ def feature_selection(data_features, data_labels, usePCA, useFeatSel, dimensiona
     else:
         if useFeatSel:
             # Feature selection
-            selector = SelectKBest(chi2, k=dimensionalitySel)  # .fit_transform(data_features, data_labels)
+            selector = SelectKBest(f_classif, k=dimensionalitySel)  # .fit_transform(data_features, data_labels)
             selector.fit(data_features, data_labels)
             cols = selector.get_support(indices=True)
             data_features = data_features.iloc[:, cols]
@@ -175,11 +180,11 @@ def normalize(data_features):
     for y in range(data_features.iloc[0, :].size):
         for x in range(data_features.iloc[:, 0].size):
             data_features.iloc[x, y] = stdScaler[x, y]
-    min_max_scaler = preprocessing.MinMaxScaler()
-    data_features_norm = min_max_scaler.fit_transform(data_features)
-    for y in range(data_features.iloc[0, :].size):
-        for x in range(data_features.iloc[:, 0].size):
-            data_features.iloc[x, y] = data_features_norm[x, y]
+    # min_max_scaler = preprocessing.MinMaxScaler()
+    # data_features_norm = min_max_scaler.fit_transform(data_features)
+    # for y in range(data_features.iloc[0, :].size):
+    #    for x in range(data_features.iloc[:, 0].size):
+    #        data_features.iloc[x, y] = data_features_norm[x, y]
     return data_features
 
 
