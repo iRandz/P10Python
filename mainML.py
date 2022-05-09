@@ -9,7 +9,7 @@ import SingleRegression
 
 settings = Settings.Settings()
 # Prepare Data -------------------------------------------------------------
-file = "data_0.csv"
+file = "Data/CombinedDayLog.CSV"
 data = pd.read_csv(file, sep=';')
 
 settings.dataFile = file
@@ -24,7 +24,7 @@ data_features = Functions.calc_derived_features(data)
 # Process data
 data_features, data_labels = Functions.process_data(data_features, settings)
 
-# Normalize to 0-1 range
+# Standardize
 if settings.normalize:
     data_features = Functions.normalize(data_features)
 

@@ -1,15 +1,17 @@
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 
+import FeatureDict
 import Functions
 import Regression
 
 
 def single_classification(data_features, data_labels, settings):
-	data_features = Functions.feature_selection(data_features, data_labels, settings.usePCA, settings.useFeatSel, 1, 1)
+	# data_features = Functions.feature_selection(data_features, data_labels, settings.usePCA, settings.useFeatSel, 1, 1)
 
-	# data_features = pd.DataFrame(data_features['Shots fired'])
+	data_features = pd.DataFrame(data_features[FeatureDict.DIST])
 
 	# Create test/train split
 	x_train, x_test, y_train, y_test = train_test_split(

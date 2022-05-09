@@ -22,13 +22,13 @@ class Settings:
         REGRESSION = 2
 
     dataFile = "CombinedDays.csv"
-    test = CurrentTest.DIMENSIONALITY
+    test = CurrentTest.REGRESSION
     plotAllHists = 0
-    classifier_target = ClassTarget.TYPE
-    regressor_target = RegressionTarget.KILLS
+    classifier_target = ClassTarget.DAYS
+    regressor_target = RegressionTarget.PLAYTIME
 
-    show2D = 0
-    show3D = 1
+    show2D = 1
+    show3D = 0
     column1X = 0
     column2Y = 1
     column3Z = 2
