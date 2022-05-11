@@ -61,6 +61,8 @@ def process_data(data, settingsIn: Settings.Settings):
         target = settingsIn.classifier_target
     elif settingsIn.test == settingsIn.CurrentTest.REGRESSION:
         target = settingsIn.regressor_target
+    elif settingsIn.test == settingsIn.CurrentTest.ROC:
+        target = settingsIn.classifier_target
     else:
         # Do nothing
         print("What u doing?")

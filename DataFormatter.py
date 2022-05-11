@@ -21,10 +21,6 @@ def ByDay(dataIn):
 
 def AccumulativeDays(dataIn):
 	data_0: pd.DataFrame = dataIn.loc[dataIn[fD.DAY] == 0]
-	data_1 = dataIn.loc[dataIn[fD.DAY] == 1]
-	data_2 = dataIn.loc[dataIn[fD.DAY] == 2]
-	data_3 = dataIn.loc[dataIn[fD.DAY] == 3]
-	data_4 = dataIn.loc[dataIn[fD.DAY] == 4]
 
 	IDs = dataIn.copy().pop(fD.ID)
 
@@ -35,10 +31,10 @@ def AccumulativeDays(dataIn):
 
 	for i, currrentID in enumerate(IDs.unique()):  # Iterate over participant ids
 		tempHolder: pd.DataFrame = dataIn.loc[dataIn[fD.ID] == currrentID]
-		tempDay1 = tempHolder.iloc[0, :].copy()
-		tempDay2 = tempHolder.iloc[0, :].copy()
-		tempDay3 = tempHolder.iloc[0, :].copy()
-		tempDay4 = tempHolder.iloc[0, :].copy()
+		tempRowDay1 = tempHolder.iloc[0, :].copy()
+		tempRowDay2 = tempHolder.iloc[0, :].copy()
+		tempRowDay3 = tempHolder.iloc[0, :].copy()
+		tempRowDay4 = tempHolder.iloc[0, :].copy()
 
 		for j in range(tempHolder.iloc[0].size):  # Iterate over features
 			if isinstance(tempHolder.iloc[0, j], float) or isinstance(tempHolder.iloc[0, j], np.int64):
@@ -47,20 +43,20 @@ def AccumulativeDays(dataIn):
 					continue
 
 				if tempHolder.iloc[:, j].name is fD.DIST:
-					tempDay1.iloc[j] = np.max(tempHolder.iloc[0, j], tempHolder.iloc[1, j])
-					tempDay2.iloc[j] = np.max(tempDay1.iloc[j], tempHolder.iloc[2, j])
-					tempDay3.iloc[j] = np.max(tempDay2.iloc[j], tempHolder.iloc[3, j])
-					tempDay4.iloc[j] = np.max(tempDay3.iloc[j], tempHolder.iloc[4, j])
+					tempRowDay1.iloc[j] = np.max(tempHolder.iloc[0, j], tempHolder.iloc[1, j])
+					tempRowDay2.iloc[j] = np.max(tempRowDay1.iloc[j], tempHolder.iloc[2, j])
+					tempRowDay3.iloc[j] = np.max(tempRowDay2.iloc[j], tempHolder.iloc[3, j])
+					tempRowDay4.iloc[j] = np.max(tempRowDay3.iloc[j], tempHolder.iloc[4, j])
 
-				tempDay1.iloc[j] = tempHolder.iloc[0, j] + tempHolder.iloc[1, j]
-				tempDay2.iloc[j] = tempDay1.iloc[j] + tempHolder.iloc[2, j]
-				tempDay3.iloc[j] = tempDay2.iloc[j] + tempHolder.iloc[3, j]
-				tempDay4.iloc[j] = tempDay3.iloc[j] + tempHolder.iloc[4, j]
+				tempRowDay1.iloc[j] = tempHolder.iloc[0, j] + tempHolder.iloc[1, j]
+				tempRowDay2.iloc[j] = tempRowDay1.iloc[j] + tempHolder.iloc[2, j]
+				tempRowDay3.iloc[j] = tempRowDay2.iloc[j] + tempHolder.iloc[3, j]
+				tempRowDay4.iloc[j] = tempRowDay3.iloc[j] + tempHolder.iloc[4, j]
 
-		accuDay1.iloc[i, :] = tempDay1
-		accuDay2.iloc[i, :] = tempDay2
-		accuDay3.iloc[i, :] = tempDay3
-		accuDay4.iloc[i, :] = tempDay4
+		accuDay1.iloc[i, :] = tempRowDay1
+		accuDay2.iloc[i, :] = tempRowDay2
+		accuDay3.iloc[i, :] = tempRowDay3
+		accuDay4.iloc[i, :] = tempRowDay4
 
 	accuDay1.to_csv('AccumulativeDays1.csv', sep=';', index=False)
 	accuDay2.to_csv('AccumulativeDays2.csv', sep=';', index=False)
@@ -100,8 +96,8 @@ def ByPlayedBefore(dataIn):
 
 data = pd.read_csv("Data/CombinedDayLog.CSV", sep=';')
 
-# ByDay(data)
-# ByPlaytime(data, 3)
-# ByMeans(data, 1)
-# ByPlayedBefore(data)
-AccumulativeDays(data)
+ByDay(data)
+ByPlaytime(data, 3)
+ByMeans(data, 1.2)
+ByPlayedBefore(data)
+# AccumulativeDays(data)

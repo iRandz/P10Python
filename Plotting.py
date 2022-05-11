@@ -2,6 +2,7 @@ import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics import roc_curve, auc
 
 
 def PlotAllFeatures(data_features, data_labels, settingsIn):

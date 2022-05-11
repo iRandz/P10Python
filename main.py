@@ -1,64 +1,104 @@
-import tensorflow as tf
-from tensorflow.keras import layers
 import numpy as np
-import csv
-import pandas as pd
+import matplotlib.pyplot as plt
+from itertools import cycle
 
-# Make numpy values easier to read.
-np.set_printoptions(precision=3, suppress=True)
+from sklearn import svm, datasets
+from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import label_binarize
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.metrics import roc_auc_score
 
-# Prepare Data -------------------------------------------------------------
+# Import some data to play with
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
 
-data = pd.read_csv("Tracking_log.csv", sep=';')
+# Binarize the output
+y = label_binarize(y, classes=[0, 1, 2])
+n_classes = y.shape[1]
 
-data_features = data.copy()
-data_labels = data_features.pop('Type')
+# Add noisy features to make the problem harder
+random_state = np.random.RandomState(0)
+n_samples, n_features = X.shape
+X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
 
-data_features = np.array(data_features)
+# shuffle and split training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=0)
 
-#print(data_labels)
-#print("----------")
-#print(data_features)
+# Learn to predict each class against the other
+classifier = OneVsRestClassifier(
+    svm.SVC(kernel="linear", probability=True, random_state=random_state)
+)
+y_score = classifier.fit(X_train, y_train).decision_function(X_test)
 
-# Prepare and train model -------------------------------------------------------
+print(n_classes)
+print(y_score)
+print(y_test)
 
-normalize = layers.Normalization()
-normalize.adapt(data_features)
+# Compute ROC curve and ROC area for each class
+fpr = dict()
+tpr = dict()
+roc_auc = dict()
+for i in range(n_classes):
+    fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
+    roc_auc[i] = auc(fpr[i], tpr[i])
 
-data_model = tf.keras.Sequential([
-    normalize,
-    layers.Dense(64),
-    layers.Dense(3)
-])
+# Compute micro-average ROC curve and ROC area
+fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
+roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
 
-data_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-                   optimizer=tf.optimizers.Adam(),
-                   metrics=['accuracy'])
+# First aggregate all false positive rates
+all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n_classes)]))
 
-data_model.fit(data_features, data_labels, epochs=10)
+# Then interpolate all ROC curves at this points
+mean_tpr = np.zeros_like(all_fpr)
+for i in range(n_classes):
+    mean_tpr += np.interp(all_fpr, fpr[i], tpr[i])
 
-# Validate model -------------------------------------------------------------------------
+# Finally average it and compute AUC
+mean_tpr /= n_classes
 
-print("--------")
-print("Single value check:")
+fpr["macro"] = all_fpr
+tpr["macro"] = mean_tpr
+roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
-probability_model = tf.keras.Sequential([data_model, tf.keras.layers.Softmax()])
+# Plot all ROC curves
+lw = 2
+plt.figure()
+plt.plot(
+    fpr["micro"],
+    tpr["micro"],
+    label="micro-average ROC curve (area = {0:0.2f})".format(roc_auc["micro"]),
+    color="deeppink",
+    linestyle=":",
+    linewidth=4,
+)
 
-dataTest = pd.read_csv("Tracking_test.csv", sep=';')
+plt.plot(
+    fpr["macro"],
+    tpr["macro"],
+    label="macro-average ROC curve (area = {0:0.2f})".format(roc_auc["macro"]),
+    color="navy",
+    linestyle=":",
+    linewidth=4,
+)
 
-dataTest_features = data.copy()
-dataTest_labels = dataTest_features.pop('Type')
+colors = cycle(["aqua", "darkorange", "cornflowerblue"])
+for i, color in zip(range(n_classes), colors):
+    plt.plot(
+        fpr[i],
+        tpr[i],
+        color=color,
+        lw=lw,
+        label="ROC curve of class {0} (area = {1:0.2f})".format(i, roc_auc[i]),
+    )
 
-dataTest_features = np.array(data_features)
-predictions = probability_model.predict(dataTest_features)
-
-print(predictions[0])
-print(dataTest_labels[0])
-
-print("--------")
-print("Validation:")
-
-print(data_model.evaluate(dataTest_features,  dataTest_labels, verbose=2))
-
-data_model.save("C:\\Users\\chrbj\\PycharmProjects\\P10Python\\Model")
-
+plt.plot([0, 1], [0, 1], "k--", lw=lw)
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Some extension of Receiver operating characteristic to multiclass")
+plt.legend(loc="lower right")
+plt.show()

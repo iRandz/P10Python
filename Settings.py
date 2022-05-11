@@ -20,11 +20,12 @@ class Settings:
         DIMENSIONALITY = 0
         CLASSIFICATION = 1
         REGRESSION = 2
+        ROC = 3
 
     dataFile = "CombinedDays.csv"
-    test = CurrentTest.REGRESSION
+    test = CurrentTest.ROC
     plotAllHists = 0
-    classifier_target = ClassTarget.DAYS
+    classifier_target = ClassTarget.TYPE
     regressor_target = RegressionTarget.PLAYTIME
 
     show2D = 1
@@ -43,5 +44,5 @@ class Settings:
     useFeatSel = 1
 
     dimensionalityPCA = 3
-    dimensionalitySel = 3
+    dimensionalitySel = 7
     groups = None

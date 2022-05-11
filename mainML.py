@@ -3,13 +3,14 @@ import pandas as pd
 
 import DimensionalityCheck
 import Functions
+import OvRROC
 import Settings
 import SingleClassification
 import SingleRegression
 
 settings = Settings.Settings()
 # Prepare Data -------------------------------------------------------------
-file = "Data/CombinedDayLog.CSV"
+file = "data_highMeanDif.csv"
 data = pd.read_csv(file, sep=';')
 
 settings.dataFile = file
@@ -36,6 +37,9 @@ elif settings.test == settings.CurrentTest.CLASSIFICATION:
     SingleClassification.single_classification(data_features, data_labels, settings)
 elif settings.test == settings.CurrentTest.REGRESSION:
     SingleRegression.single_classification(data_features, data_labels, settings)
+elif settings.test == settings.CurrentTest.ROC:
+    OvRROC.calcOvR(data_features, data_labels, settings)
 else:
     # Do nothing
     print("What u doing?")
+
