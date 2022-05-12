@@ -4,7 +4,7 @@ from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 
-import FeatureDict
+import FeatureDict as fD
 import Plotting
 import Settings
 
@@ -31,25 +31,40 @@ def calc_ratio(row, timeName, interactionName):
     return row[timeName] / row[interactionName]
 
 
+def sumTotal(row, normal, major):
+    return row[normal] + row[major]
+
+
 def calc_derived_features(dataframe):
-    dataframe[FeatureDict.MLT_PER] = dataframe.apply(
+    dataframe[fD.MLT_PER] = dataframe.apply(
         lambda row: calc_ratio(row, 'MajorLore reading time', 'MajorLore interactions'), axis=1)
-    dataframe[FeatureDict.LT_PER] = dataframe.apply(
+    dataframe[fD.LT_PER] = dataframe.apply(
         lambda row: calc_ratio(row, 'Lore reading time', 'Lore interactions'), axis=1)
     # dataframe['MajorLoreRatioClose'] = dataframe.apply (lambda row: CalcRatio(row, 'MajorLore interactions',
     # 'MajorLore seen'), axis=1)
-    dataframe[FeatureDict.LR_SEEN] = dataframe.apply(
+    dataframe[fD.LR_SEEN] = dataframe.apply(
         lambda row: calc_ratio(row, 'Lore interactions', 'Lore seen'), axis=1)
-    dataframe[FeatureDict.LR_CLOSE] = dataframe.apply(
+    dataframe[fD.LR_CLOSE] = dataframe.apply(
         lambda row: calc_ratio(row, 'Lore interactions', 'Lore close'), axis=1)
-    dataframe[FeatureDict.RR_SEEN] = dataframe.apply(
+    dataframe[fD.RR_SEEN] = dataframe.apply(
         lambda row: calc_ratio(row, 'Resources', 'Resources seen '), axis=1)
-    dataframe[FeatureDict.RR_CLOSE] = dataframe.apply(
+    dataframe[fD.RR_CLOSE] = dataframe.apply(
         lambda row: calc_ratio(row, 'Resources', 'Resources close'), axis=1)
-    dataframe[FeatureDict.ER_SEEN] = dataframe.apply(lambda row: calc_ratio(row, 'Kills', 'Enemies seen'), axis=1)
-    dataframe[FeatureDict.ER_CLOSE] = dataframe.apply(
+    dataframe[fD.ER_SEEN] = dataframe.apply(lambda row: calc_ratio(row, 'Kills', 'Enemies seen'), axis=1)
+    dataframe[fD.ER_CLOSE] = dataframe.apply(
         lambda row: calc_ratio(row, 'Kills', 'Enemies close'), axis=1)
-    dataframe[FeatureDict.MT_PER] = dataframe.apply(lambda row: calc_ratio(row, 'MapTime', 'Opened map'), axis=1)
+    dataframe[fD.MT_PER] = dataframe.apply(lambda row: calc_ratio(row, 'MapTime', 'Opened map'), axis=1)
+
+    dataframe[fD.TOTAL_KILLS] = dataframe.apply(lambda row: sumTotal(row, fD.KILLS, fD.M_KILLS), axis=1)
+    dataframe[fD.TOTAL_L_INTERACTIONS] = dataframe.apply(lambda row: sumTotal(row, fD.LORE, fD.ML_INTERACTIONS), axis=1)
+    dataframe[fD.TOTAL_L_SEEN] = dataframe.apply(lambda row: sumTotal(row, fD.L_SEEN, fD.ML_SEEN), axis=1)
+    dataframe[fD.TOTAL_L_CLOSE] = dataframe.apply(lambda row: sumTotal(row, fD.L_CLOSE, fD.ML_CLOSE), axis=1)
+    dataframe[fD.TOTAL_L_READING] = dataframe.apply(lambda row: sumTotal(row, fD.L_READINGTIME, fD.ML_READINGTIME), axis=1)
+    dataframe[fD.TOTAL_E_SEEN] = dataframe.apply(lambda row: sumTotal(row, fD.E_SEEN, fD.ME_SEEN), axis=1)
+    dataframe[fD.TOTAL_E_CLOSE] = dataframe.apply(lambda row: sumTotal(row, fD.E_CLOSE, fD.ME_CLOSE), axis=1)
+    dataframe[fD.TOTAL_RESOURCES] = dataframe.apply(lambda row: sumTotal(row, fD.RESOURCES, fD.M_RESOURCES), axis=1)
+    dataframe[fD.TOTAL_R_SEEN] = dataframe.apply(lambda row: sumTotal(row, fD.R_SEEN, fD.MR_SEEN), axis=1)
+    dataframe[fD.TOTAL_R_CLOSE] = dataframe.apply(lambda row: sumTotal(row, fD.R_CLOSE, fD.MR_CLOSE), axis=1)
 
     return dataframe
 
@@ -90,13 +105,13 @@ def process_data(data, settingsIn: Settings.Settings):
 
     # data.pop('Weekly playtime')
     settingsIn.groups = data.pop('Participant ID')
-    safe_pop(data, FeatureDict.AGE)
+    safe_pop(data, fD.AGE)
     data.pop('Journey mean')
     data.pop('Manage mean')
     data.pop('Assault mean')
     safe_pop(data, 'Obj or exp')
     safe_pop(data, 'Previous participant')
-    safe_pop(data, FeatureDict.PLAYTIME)
+    safe_pop(data, fD.PLAYTIME)
     # data.pop('Major enemies close')
     # data.pop('Major kills')
     # data.pop(FeatureDict.E_SEEN)
@@ -208,7 +223,7 @@ def validate_classification_model(model, X_test, y_test, printStuff):
         print(balanced_accuracy_score(y_true, y_predict))
         print(confusion_matrix(y_true, y_predict))
 
-    return balanced_accuracy_score(y_true, y_predict), y_true, y_predict
+    return balanced_accuracy_score(y_true, y_predict), model.score(X_test, y_test), y_true, y_predict
 
 
 def validate_regression_model(model, X_test, y_test, printStuff):

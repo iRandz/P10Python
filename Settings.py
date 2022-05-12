@@ -23,7 +23,7 @@ class Settings:
         ROC = 3
 
     dataFile = "CombinedDays.csv"
-    test = CurrentTest.ROC
+    test = CurrentTest.DIMENSIONALITY
     plotAllHists = 0
     classifier_target = ClassTarget.TYPE
     regressor_target = RegressionTarget.PLAYTIME

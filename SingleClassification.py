@@ -16,7 +16,7 @@ def single_classification(data_features, data_labels, settings: Settings.Setting
 
 	# data_features = data_features[[FeatureDict.AGE, FeatureDict.MLT_PER, FeatureDict.TIMESS, FeatureDict.ML_READINGTIME]]
 
-	knn_score, nn_score, ovr_score, svm_score = Classification.classify(data_features, data_labels, True, settings)
+	knn_score, nn_score, ovr_score, svm_score, knn_unbalScores, nn_unbalScores, ovr_unbalScores, svm_unbalScores = Classification.classify(data_features, data_labels, True, settings)
 
 	print("---")
 	print("Plotting:")
