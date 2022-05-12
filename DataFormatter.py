@@ -97,7 +97,7 @@ def ByPlayedBefore(dataIn):
 data = pd.read_csv("Data/CombinedDayLog.CSV", sep=';')
 
 ByDay(data)
-ByPlaytime(data, 3)
-ByMeans(data, 1.2)
+ByPlaytime(data, 9)
+ByMeans(data, 1)
 ByPlayedBefore(data)
 # AccumulativeDays(data)

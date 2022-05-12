@@ -25,7 +25,7 @@ class Settings:
     dataFile = "CombinedDays.csv"
     test = CurrentTest.DIMENSIONALITY
     plotAllHists = 0
-    classifier_target = ClassTarget.TYPE
+    classifier_target = ClassTarget.OBJOREXP
     regressor_target = RegressionTarget.PLAYTIME
 
     show2D = 1

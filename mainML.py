@@ -10,7 +10,7 @@ import SingleRegression
 
 settings = Settings.Settings()
 # Prepare Data -------------------------------------------------------------
-file = "data_highMeanDif.csv"
+file = "data_lowPlayTime.csv"
 data = pd.read_csv(file, sep=';')
 
 settings.dataFile = file

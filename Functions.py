@@ -98,6 +98,14 @@ def process_data(data, settingsIn: Settings.Settings):
 
     data = handle_invalid_data(settingsIn, data)
 
+    printSumVariables = False
+    if printSumVariables:
+        CheckVariable: pd.DataFrame = data[fD.AGE]
+        print(CheckVariable.max())
+        print(CheckVariable.min())
+        print(CheckVariable.std())
+        print(CheckVariable.mean())
+
     data_labels = data.pop(target.value)
 
     safe_pop(data, 'Type')

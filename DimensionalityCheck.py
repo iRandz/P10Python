@@ -27,7 +27,7 @@ def dimensionality_check(data_features, data_labels, settingsIn: Settings.Settin
         working_features = Functions.feature_selection(data_features_copy, data_labels, not FeatSelo, FeatSelo, i, i)
         if i is 1:
             featureMemory = working_features.columns
-            print(featureMemory)
+            print(featureMemory.values)
             continue
         print(working_features.columns.copy().drop(featureMemory).values)
         featureMemory = working_features.columns
